@@ -35,9 +35,9 @@ module CfnToml
         end
       end
       if values.key?('Default')
-        f.write "#{name} = '#{values['Default']}' # #{values['Type']}\n"
+        f.write "##{name} = '#{values['Default']}' # #{values['Type']}\n"
       else
-        f.write "##{name} = '' # #{values['Type']}\n"
+        f.write "#{name} = '' # #{values['Type']}\n"
       end
     end
   end

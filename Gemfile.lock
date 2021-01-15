@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    cfn-toml (1.0.3)
-      toml-rb
+    cfn-toml (1.0.4)
+      toml-rb (>= 2.0.1)
 
 GEM
   remote: https://rubygems.org/

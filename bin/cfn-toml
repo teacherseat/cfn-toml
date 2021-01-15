@@ -3,6 +3,8 @@ $LOAD_PATH << File.expand_path('lib')
 
 require 'optparse'
 require 'cfn_toml'
+require 'pry'
+require 'pathname'
 
 def show_version
   puts "CfnToml v#{CfnToml::VERSION}"
@@ -11,23 +13,33 @@ end
 
 def show_help
   puts <<~HELP
-    Usage: toml-conf [options]
+    Usage: cfn-toml [options]
     Options:
-     -t,    --toml   path to toml file
-     -v, --version   show version
-  HELP
+     -t,    --toml  path to toml file
+     -p,    --profile profile name (only used with cfn-toml init)
+     -v,    --version show version
 
+    Initialize:
+     cfn-toml init mystack --profile myprofile
+
+    Bash Examples:
+     REGION=$(cfn-toml key deploy.region)
+     PARAMETERS=$(cfn-toml params v1)
+     OVERRIDE_PARAMETERS=$(cfn-toml params v2)
+     BUCKET=$(cfn-toml key bucket --toml /path/to/conf.prod.toml)
+  HELP
   exit 0
 end
 
 options = {}
 
-arg1 = ARGV[0]
-arg2 = ARGV[1]
-
 parser = OptionParser.new do|opts|
-  opts.on('--toml PATH') do |path|
+  opts.on('-t PATH', '--toml PATH') do |path|
     options[:toml_filepath] = path
+  end
+
+  opts.on('-p NAME', '--profile NAME') do |name|
+    options[:profile] = name
   end
 
   opts.on('-h', '--help') do
@@ -39,19 +51,29 @@ end
 begin
   parser.parse!
 
-  show_help if options.empty?
+  arg1 = ARGV[0]
+  arg2 = ARGV[1]
 
   # Defaults
-  options[:toml_filepath] ||= 'config.toml'
+  options[:toml_filepath] ||= "config.toml"
+  options[:toml_filepath] = File.expand_path options[:toml_filepath]
+  options[:profile] ||= 'default'
 
-  result =
   if arg1 == 'key'
-    CfnToml.key options[:toml_filepath], arg2
+    result = CfnToml.key options[:toml_filepath], arg2
+    STDOUT.puts result
   elsif arg1 == 'params'
-    CfnToml.params options[:toml_filepath], arg2
+    result = CfnToml.params options[:toml_filepath], arg2
+    STDOUT.puts result
+  elsif arg1 == 'init'
+    # arg2 - stackname
+    # arg3 - profile
+    stackname = nil
+    stackname = arg2 if !arg2.nil? || !arg2 == ''
+    CfnToml.init options[:toml_filepath], arg2, options[:profile]
+    STDOUT.puts options[:toml_filepath]
   end
 
-  STDOUT.puts result
 
   exit 0
 rescue => e

@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby
+$LOAD_PATH << File.expand_path('lib')
+
+require 'optparse'
+require 'cfn_toml'
+
+def show_version
+  puts "CfnToml v#{CfnToml::VERSION}"
+  exit 0
+end
+
+def show_help
+  puts <<~HELP
+    Usage: toml-conf [options]
+    Options:
+     -t,    --toml   path to toml file
+     -v, --version   show version
+  HELP
+
+  exit 0
+end
+
+options = {}
+
+arg1 = ARGV[0]
+arg2 = ARGV[1]
+
+parser = OptionParser.new do|opts|
+  opts.on('--toml PATH') do |path|
+    options[:toml_filepath] = path
+  end
+
+  opts.on('-h', '--help') do
+    show_help
+  end
+end
+
+
+begin
+  parser.parse!
+
+  show_help if options.empty?
+
+  # Defaults
+  options[:toml_filepath] ||= 'config.toml'
+
+  result =
+  if arg1 == 'key'
+    CfnToml.key options[:toml_filepath], arg2
+  elsif arg1 == 'params'
+    CfnToml.params options[:toml_filepath], arg2
+  end
+
+  STDOUT.puts result
+
+  exit 0
+rescue => e
+  STDERR.puts "ERROR: #{e.message}"
+
+  if options[:debug]
+    STDERR.puts
+    STDERR.puts e.backtrace
+  end
+
+  exit 1
+end

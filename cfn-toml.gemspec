@@ -19,6 +19,6 @@ Gem::Specification.new do |s|
   s.bindir        = 'bin'
 
   s.required_ruby_version = '>= 2.4'
-  s.add_dependency 'toml-rb'
+  s.add_dependency 'toml-rb' = '>= 2.0.1'
   s.add_development_dependency 'bundler', '>= 2.1.4'
 end

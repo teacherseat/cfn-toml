@@ -3,7 +3,6 @@ $LOAD_PATH << File.expand_path('lib')
 
 require 'optparse'
 require 'cfn_toml'
-require 'pry'
 require 'pathname'
 
 def show_version
@@ -17,6 +16,7 @@ def show_help
     Options:
      -t,    --toml  path to toml file
      -p,    --profile profile name (only used with cfn-toml init)
+     -f,    --cloudformation-template populate toml parameters (only used with cfn-toml init)
      -v,    --version show version
 
     Initialize:
@@ -42,6 +42,10 @@ parser = OptionParser.new do|opts|
     options[:profile] = name
   end
 
+  opts.on('-f PATH', '--cloudformation-template PATH') do |path|
+    options[:cfn_filepath] = path
+  end
+
   opts.on('-h', '--help') do
     show_help
   end
@@ -59,6 +63,16 @@ begin
   options[:toml_filepath] = File.expand_path options[:toml_filepath]
   options[:profile] ||= 'default'
 
+  if options[:cfn_filepath].nil?
+    if File.exists?(File.expand_path('template.yaml'))
+      options[:cfn_filepath] = "template.yaml"
+    elsif File.exists?(File.expand_path('template.yml'))
+      options[:cfn_filepath] = "template.yml"
+    end
+    options[:cfn_filepath] ||= "template.yaml"
+  end
+  options[:cfn_filepath] = File.expand_path options[:cfn_filepath]
+
   if arg1 == 'key'
     result = CfnToml.key options[:toml_filepath], arg2
     STDOUT.puts result
@@ -70,7 +84,7 @@ begin
     # arg3 - profile
     stackname = nil
     stackname = arg2 if !arg2.nil? || !arg2 == ''
-    CfnToml.init options[:toml_filepath], arg2, options[:profile]
+    CfnToml.init options[:toml_filepath], options[:cfn_filepath], arg2, options[:profile]
     STDOUT.puts options[:toml_filepath]
   end
 

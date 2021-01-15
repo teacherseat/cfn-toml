@@ -1,10 +1,11 @@
 require 'toml-rb'
 require 'fileutils'
+require 'yaml'
 
 module CfnToml
-  def self.init toml_filepath, stackname, profile
+  def self.init toml_filepath, cfn_filepath, stackname, profile
     region = `aws configure get region --profile #{profile}`
-    region ||= 'us-east-1'
+    region = 'us-east-1' if region.nil? || region == ''
     stackname ||= 'stackname'
 
     toml_path = File.dirname toml_filepath
@@ -16,6 +17,28 @@ module CfnToml
       f.write "stack_name = '#{stackname}'\n"
       f.write "region = '#{region.chomp}'\n\n"
       f.write "[parameters]\n"
+      self.init_parameters f, cfn_filepath
+    end
+  end
+
+  def self.init_parameters f, cfn_filepath
+    return unless File.exists?(cfn_filepath)
+    contents = File.open(cfn_filepath).read
+    hash = YAML.load(contents)
+    return unless hash.key?('Parameters')
+
+    hash['Parameters'].each do |name, values|
+      if values.key?('Description')
+        lines = values['Description'].split("\n")
+        lines.each do |line|
+          f.write "# #{line} \n"
+        end
+      end
+      if values.key?('Default')
+        f.write "#{name} = '#{values['Default']}' # #{values['Type']}\n"
+      else
+        f.write "##{name} = '' # #{values['Type']}\n"
+      end
     end
   end
 

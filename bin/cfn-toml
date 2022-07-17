@@ -57,6 +57,7 @@ begin
 
   arg1 = ARGV[0]
   arg2 = ARGV[1]
+  arg3 = ARGV[2]
 
   # Defaults
   options[:toml_filepath] ||= "config.toml"
@@ -77,7 +78,7 @@ begin
     result = CfnToml.key options[:toml_filepath], arg2
     STDOUT.puts result
   elsif arg1 == 'params'
-    result = CfnToml.params options[:toml_filepath], arg2
+    result = CfnToml.params options[:toml_filepath], arg2, arg3
     STDOUT.puts result
   elsif arg1 == 'init'
     # arg2 - stackname

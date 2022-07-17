@@ -7,14 +7,14 @@ module CfnToml
     data[namespace][key]
   end
 
-  def self.params toml_filepath, params_version
+  def self.params toml_filepath, params_version, parameters_name='parameters'
     data = TomlRB.load_file(toml_filepath)
     if params_version == 'v1'
-      data['parameters'].map do |k,v|
+      data[parameters_name].map do |k,v|
         "ParameterKey=#{k},ParameterValue=#{v}"
       end.join(' ')
     elsif params_version == 'v2'
-      data['parameters'].map do |k,v|
+      data[parameters_name].map do |k,v|
         "#{k}=#{v}"
       end.join(' ')
     end

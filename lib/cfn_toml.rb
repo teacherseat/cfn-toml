@@ -50,6 +50,7 @@ module CfnToml
 
   def self.params toml_filepath, params_version, parameters_name='parameters'
     data = TomlRB.load_file(toml_filepath)
+    parameters_name ||= 'parameters'
     if params_version == 'v1'
       data[parameters_name].map do |k,v|
         "ParameterKey=#{k},ParameterValue=#{v}"

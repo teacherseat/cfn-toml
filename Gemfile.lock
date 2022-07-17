@@ -1,15 +1,22 @@
+PATH
+  remote: .
+  specs:
+    cfn-toml (1.0.5)
+      toml-rb (>= 2.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
-    parslet (1.8.2)
-    toml (0.2.0)
-      parslet (~> 1.8.0)
+    citrus (3.0.2)
+    toml-rb (2.0.1)
+      citrus (~> 3.0, > 3.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  toml
+  bundler (>= 2.1.4)
+  cfn-toml!
 
 BUNDLED WITH
    2.1.4

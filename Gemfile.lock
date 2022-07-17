@@ -1,14 +1,14 @@
 PATH
   remote: .
   specs:
-    cfn-toml (1.0.5)
+    cfn-toml (1.0.7)
       toml-rb (>= 2.0.1)
 
 GEM
   remote: https://rubygems.org/
   specs:
     citrus (3.0.2)
-    toml-rb (2.0.1)
+    toml-rb (2.2.0)
       citrus (~> 3.0, > 3.0)
 
 PLATFORMS

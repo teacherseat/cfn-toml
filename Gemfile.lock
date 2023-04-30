@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cfn-toml (1.0.9)
+    cfn-toml (1.0.10)
       toml-rb (>= 2.0.1)
 
 GEM

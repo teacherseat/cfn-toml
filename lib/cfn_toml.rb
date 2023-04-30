@@ -9,7 +9,7 @@ module CfnToml
     stackname ||= 'stackname'
 
     toml_path = File.dirname toml_filepath
-    FileUtils.mkpath(toml_path) unless File.exists?(toml_path)
+    FileUtils.mkpath(toml_path) unless File.exist?(toml_path)
 
     File.open(toml_filepath, "w") do |f| 
       f.write "[deploy]\n"
@@ -22,7 +22,7 @@ module CfnToml
   end
 
   def self.init_parameters f, cfn_filepath
-    return unless File.exists?(cfn_filepath)
+    return unless File.exist?(cfn_filepath)
     contents = File.open(cfn_filepath).read
     hash = YAML.load(contents)
     return unless hash.key?('Parameters')

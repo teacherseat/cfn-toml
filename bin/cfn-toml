@@ -65,9 +65,9 @@ begin
   options[:profile] ||= 'default'
 
   if options[:cfn_filepath].nil?
-    if File.exists?(File.expand_path('template.yaml'))
+    if File.exist?(File.expand_path('template.yaml'))
       options[:cfn_filepath] = "template.yaml"
-    elsif File.exists?(File.expand_path('template.yml'))
+    elsif File.exist?(File.expand_path('template.yml'))
       options[:cfn_filepath] = "template.yml"
     end
     options[:cfn_filepath] ||= "template.yaml"

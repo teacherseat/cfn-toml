@@ -2,6 +2,12 @@
 
 cfn-toml will read a toml file that is designed to be used with CloudFormation CLI commands within a bash script.
 
+## How to install
+
+```sh
+gem install cfn-toml
+```
+
 ### How to use
 
 Cfn-Toml automatically looks for a file called `conf.toml` in the working directory.
